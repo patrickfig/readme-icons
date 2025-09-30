@@ -1,32 +1,40 @@
-// src/worker.js
 import icons from "./icons.json";
 
 export default {
-  async fetch(req) {
-    const url = new URL(req.url);
-    if (url.pathname !== "/icons") {
-      return new Response("Not found", { status: 404 });
+  async fetch(request, env) {
+    const url = new URL(request.url);
+
+    if (url.pathname === "/icons") {
+      const q = (url.searchParams.get("i") || "").trim();
+      if (!q) return new Response("Missing ?i", { status: 400 });
+      if (q.includes(",")) {
+        return new Response("Only one icon per request (e.g., ?i=sap)", { status: 400 });
+      }
+      const svg = icons[q];
+      if (!svg) return new Response(`Unknown icon: ${q}`, { status: 404 });
+
+      return new Response(svg, {
+        headers: {
+          "Content-Type": "image/svg+xml; charset=utf-8",
+          "Cache-Control": "public, max-age=3600",
+          "Access-Control-Allow-Origin": "*",
+        },
+      });
     }
 
-    const q = (url.searchParams.get("i") || "").trim();
-    if (!q) return new Response("Missing ?i", { status: 400 });
-
-    // NÃO suportamos lista aqui: é 1 ícone por vez, exatamente como veio.
-    if (q.includes(",")) {
-      return new Response("Only one icon per request (e.g., ?i=sap)", { status: 400 });
+    const res = await env.ASSETS.fetch(request).catch(() => null);
+    if (res && res.ok) {
+      const ct = res.headers.get("Content-Type") || "";
+      if (ct.includes("svg")) {
+        const h = new Headers(res.headers);
+        h.set("Content-Type", "image/svg+xml; charset=utf-8");
+        h.set("X-Content-Type-Options", "nosniff");
+        h.set("Content-Disposition", "inline");
+        return new Response(res.body, { status: 200, headers: h });
+      }
+      return res;
     }
 
-    // pega o conteúdo bruto do arquivo lido no build (ex.: sap.svg)
-    const svg = icons[q];
-    if (!svg) return new Response(`Unknown icon: ${q}`, { status: 404 });
-
-    // devolve exatamente o SVG como foi lido, sem modificar nada
-    return new Response(svg, {
-      headers: {
-        "Content-Type": "image/svg+xml; charset=utf-8",
-        "Cache-Control": "public, max-age=3600",
-        "Access-Control-Allow-Origin": "*",
-      },
-    });
+    return new Response("Not found", { status: 404 });
   },
 };
