@@ -1,0 +1,30 @@
+@"
+# Node/JS
+node_modules/
+dist/
+build/
+.cache/
+.tmp/
+.npm/
+pnpm-lock.yaml
+
+# Logs & coverage
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+coverage/
+
+# Cloudflare/Workers
+.wrangler/
+.workerd/
+
+# IDE/editor
+.vscode/
+.idea/
+.DS_Store
+
+# Env
+.env
+.env.*
+"@ | Out-File -Encoding UTF8 .gitignore

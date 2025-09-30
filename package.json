@@ -1,0 +1,14 @@
+{
+  "name": "my-skill-icons",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:icons": "node scripts/build-icons.mjs",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.40.2"
+  }
+}

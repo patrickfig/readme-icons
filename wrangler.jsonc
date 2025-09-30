@@ -1,0 +1,7 @@
+{
+  // Change this to your preferred name
+  "name": "my-skill-icons",
+  "main": "src/worker.js",
+  "compatibility_date": "2025-09-26",
+  "workers_dev": true
+}
