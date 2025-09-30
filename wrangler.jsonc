@@ -1,7 +1,9 @@
 {
-  // Change this to your preferred name
-  "name": "my-skill-icons",
+  "name": "readme-icons",
   "main": "src/worker.js",
   "compatibility_date": "2025-09-26",
-  "workers_dev": true
+  "workers_dev": true,
+  "assets": {
+    "directory": "icons"
+  }
 }
